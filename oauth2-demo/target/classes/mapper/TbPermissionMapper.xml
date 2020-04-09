@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tpshion.oauth2.demo.mapper.TbPermissionMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, parent_id, name, enname, url, description, created, updated
+    </sql>
+
+    <!-- 别名通用查询结果列 -->
+    <sql id="Base_Column_List_Type">
+        p.id, p.parent_id, p.name, p.enname, p.url, p.description, p.created, p.updated
+    </sql>
+
+    <!-- 根据用户id获取权限列表 -->
+    <select id="getPermissions" resultType="com.tpshion.oauth2.demo.domain.entity.TbPermission">
+        SELECT <include refid="Base_Column_List_Type"/>
+        FROM
+          tb_user AS u
+          LEFT JOIN tb_user_role AS ur
+            ON u.id = ur.user_id
+          LEFT JOIN tb_role AS r
+            ON r.id = ur.role_id
+          LEFT JOIN tb_role_permission AS rp
+            ON r.id = rp.role_id
+          LEFT JOIN tb_permission AS p
+            ON p.id = rp.permission_id
+        WHERE u.id = #{userId}
+    </select>
+
+</mapper>
